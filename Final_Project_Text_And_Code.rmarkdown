@@ -2,7 +2,13 @@
 title: "Replace this with an interesting title"
 ---
 
+
+
+
 ## Motivation and Context
+
+
+
 
 ```{r}
 #| label: do this first
@@ -12,17 +18,19 @@ title: "Replace this with an interesting title"
 here::i_am("Final_Project_Text_And_Code.qmd")
 ```
 
-This section describes what you are investigating in your project and why you are investigating it. You should provide enough contextual background and information that someone with a limited background can understand the broad outlines of the topic being investigated.
 
-I am investigating attendance at NFL games because it is interesting to delve into the many factors that play into why a person would go to a stadium rather than simply watch from home. The time of day, date, loyalty to a team, cost, and rivalries may all play a role. There are also other monetary reasons one should consider investigating future attendance. For instance, given a predicted increase, which isn't possible due to stadium limitations, renovating stadiums for additional seats may become a priority. In addition, there are dynamic reasons, such as ticket prices and the number of staff, which can change depending on predicted attendance.
 
-The background to understand NFL game attendance is the locations of stadiums and the popularity of teams. While how the game is played is interesting, it isn't vital to the analysis as long as we know that higher scores are better. There is, however, a simple rating system where 0 is an average team, with above zero being better and below being worse, used to measure the quality of the teams' offense, defense, and opponents. There is also a bye week for each team where they don't play, and the data uses the outdated sixteen-game season with eight played at home and the other eight played away.
+
+
 
 ## Main Objective
 
-The main objective of this project is to predict what the attendance per game would have been in the 2020 season if there wasn't a COVID-19 restriction.
+The main objective of this project is predict what the attendance would have been in the 2020 season if there wasn't a COVID-19 restriction.
 
 ## Packages Used In This Analysis
+
+
+
 
 ```{r}
 #| label: load packages
@@ -37,16 +45,10 @@ library(kknn)
 library(probably)
 library(readxl)
 library(janitor)
-library(workflows)
-library(workflowsets)
-library(recipes)
-library(rsample)
-library(parsnip)
-library(yardstick)
-library(tune)
-library(ggplot2)
-library(tidymodels)
 ```
+
+
+
 
 
 | Package | Use |
@@ -59,13 +61,8 @@ library(tidymodels)
 
 ## Data Description
 
-I am using data on attendance, scores, and other metrics for football teams' games from 2000 to 2019. It is from a Tidy Tuesday from 02/04/2020, which is a community which posts weekly projects. The data is collected from Pro Football Reference, and it was most likely collected through nfl.com as there is a game book which states the attendance as the data matches it. It also states the stadiums which would be useful to scrape and the dates and times are also most likely collected from their. The game book states it is paid attendance which is probably collected based on how many tickets are used to enter the stadium.
 
-Tidy Tuesday https://github.com/rfordatascience/tidytuesday/tree/main/data/2020/2020-02-04
 
-Pro Football Reference https://www.pro-football-reference.com/
-
-NFL Website https://www.nfl.com/
 
 ```{r}
 #| label: import data
@@ -77,9 +74,15 @@ games <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidy
 stadiums <- clean_names(read_excel(here::here("Final_Project_Data/Stadiums.xls")))
 ```
 
+
+
+
 ### Data Limitations
 
 ## Data Wrangling (Optional Section)
+
+
+
 
 ```{r}
 attendance$newteam <- str_c(attendance$team, attendance$team_name, sep = " ", collapse = NULL)
@@ -91,23 +94,9 @@ data <- games %>%
   left_join(attendance, by = c("home_team" = "newteam", "year", "week"))
 data <- data %>%
   left_join(standings, by = c("home_team" = "newteam", "year", "team", "team_name"))
-stadiums <- stadiums %>%
-  separate_rows(primary_team_s, sep = ",")
-stadiums <- stadiums %>%
-  drop_na(primary_team_s)
-stadiums <- stadiums %>%
-  rowwise() %>%
-  mutate(year = list(from:to)) %>%
-  unnest(year) %>%
-  select(-from, -to)
-stadiums <- stadiums %>%
-  filter(year >= 2000)
-stadiums <- stadiums %>%
-  filter(year <= 2020)
-stadiums <- stadiums %>%
-  distinct(year, primary_team_s, .keep_all = TRUE)
 data <- data %>%
-  left_join(stadiums, by = c("home_team" = "primary_team_s", "year"))
+  right_join(stadiums, by = c("primary_" = "newteam", "year", "team", "team_name"))
+
 ```
 
 ```{r}
@@ -118,9 +107,15 @@ data_test <- data %>%
   filter(year == 2019)
 ```
 
+
+
+
 ## Exploratory Data Analysis
 
 ## Modeling
+
+
+
 
 ```{r}
 lm1 <- lm(weekly_attendance ~ home_team + away_team + week + year, data = data_train)
@@ -266,55 +261,7 @@ knn_test_pred2 <- knn_fit |>
 knn_test_pred2
 ```
 
-```{r}
-treeR_model <- decision_tree(mode = "regression", engine = "rpart",
-                          cost_complexity = tune())
 
-treeR_recipe <- recipe(
-  weekly_attendance ~ home_team + away_team + week + year, # response ~ predictors
-  data = data_train
-)
-
-treeR_wflow <- workflow() |>
-  add_model(treeR_model) |>
-  add_recipe(treeR_recipe)
-
-data_kfold <- vfold_cv(data_train, v = 5, repeats = 3) 
-
-treeR_tune1 <- tune_grid(treeR_model, 
-                      treeR_recipe, 
-                      resamples = data_kfold, 
-                      metrics = metric_set(rmse), # ignore r-squared, we get warning messages
-                      grid = grid_regular(cost_complexity(range = c(-3, 0)), levels = 10))
-
-treeR_tune1 |>
-  collect_metrics() |> # no need to filter for RMSE because it's the only one 
-  ggplot(mapping = aes(x = cost_complexity, y = mean)) + 
-  geom_point() + 
-  geom_line() +
-  scale_x_log10()
-
-treeR_best <- select_by_one_std_err(
-  treeR_tune1,
-  metric = "rmse",
-  desc(cost_complexity)
-)
-treeR_best
-
-treeR_wflow_final <- finalize_workflow(treeR_wflow, parameters = treeR_best) 
-
-treeR_pred_check <- treeR_wflow_final |>
-  fit_resamples(
-    resamples = data_kfold,
-    # save the cross-validated predictions
-    control = control_resamples(save_pred = TRUE)
-) |> 
-  collect_predictions()
-
-ggplot(treeR_pred_check, aes(x = weekly_attendance, y = .pred)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0, color = "blue")
-```
 
 
 ## Insights
@@ -322,3 +269,4 @@ ggplot(treeR_pred_check, aes(x = weekly_attendance, y = .pred)) +
 ### Limitations and Future Work
 
 ### Reflection (Optional Subsection)
+

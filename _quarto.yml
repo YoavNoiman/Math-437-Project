@@ -16,8 +16,8 @@ website:
       
 format:
   html:
-    backgroundcolor: "#FF5F1F"
-    fontcolor: "White"
+    backgroundcolor: "Black"
+    fontcolor: "Orange"
     linkcolor: "DarkBlue"
     mainfont: "TimesNewRoman"
     fontsize: 20px

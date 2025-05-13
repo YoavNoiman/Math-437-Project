@@ -16,7 +16,7 @@ This section describes what you are investigating in your project and why you ar
 
 I am investigating attendance at NFL games because it is interesting to delve into the many factors that play into why a person would go to a stadium rather than simply watch from home. The time of day, date, loyalty to a team, cost, and rivalries may all play a role. There are also other monetary reasons one should consider investigating future attendance. For instance, given a predicted increase, which isn't possible due to stadium limitations, renovating stadiums for additional seats may become a priority. In addition, there are dynamic reasons, such as ticket prices and the number of staff, which can change depending on predicted attendance.
 
-The background to understand NFL game attendance is the locations of stadiums and the popularity of teams. While how the game is played is interesting, it isn't vital to the analysis as long as we know that higher scores are better. There is, however, a simple rating system where 0 is an average team, with above zero being better and below being worse, used to measure the quality of the teams' offense, defense, and opponents. There is also a bye week for each team where they don't play, and the data uses the outdated sixteen-game season with eight played at home and the other eight played away.
+The background to understand NFL game attendance is the locations of stadiums and the popularity of teams. While how the game is played is interesting, it isn't vital to the analysis as long as we know that higher scores are better. There is, however, a simple rating system where 0 is an average team, with above zero being better and below being worse, used to measure the quality of the teams' offense, defense, and opponents. There is also a bye week for each team where they don't play, and the data uses the outdated sixteen-game season with eight played at home and the other eight played away. Lastly, changes in team names and locations are important to consider.
 
 ## Main Objective
 
@@ -46,6 +46,7 @@ library(yardstick)
 library(tune)
 library(ggplot2)
 library(tidymodels)
+library(naniar)
 ```
 
 
@@ -57,9 +58,11 @@ library(tidymodels)
 | [rsample](https://rsample.tidymodels.org/) | to split data into training and test sets |
 | [ggplot2](https://ggplot2.tidyverse.org/) | to create nice-looking and informative graphs |
 
+FINISH
+
 ## Data Description
 
-I am using data on attendance, scores, and other metrics for football teams' games from 2000 to 2019. It is from a Tidy Tuesday from 02/04/2020, which is a community which posts weekly projects. The data is collected from Pro Football Reference, and it was most likely collected through nfl.com as there is a game book which states the attendance as the data matches it. It also states the stadiums which would be useful to scrape and the dates and times are also most likely collected from their. The game book states it is paid attendance which is probably collected based on how many tickets are used to enter the stadium.
+I am using data on attendance, scores, and other metrics for football teams' games from 2000 to 2019. It is from a Tidy Tuesday from 02/04/2020, which is a community which posts weekly projects. The data is collected from Pro Football Reference which I am also using, and it was most likely collected through nfl.com as there is a game book which states the attendance as the data matches it. It also states the stadiums which would be useful to scrape and the dates and times are also most likely collected from their. The game book states it is paid attendance which is probably collected based on how many tickets are used to enter the stadium.
 
 Tidy Tuesday https://github.com/rfordatascience/tidytuesday/tree/main/data/2020/2020-02-04
 
@@ -75,13 +78,25 @@ standings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/
 games <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-02-04/games.csv')
 
 stadiums <- clean_names(read_excel(here::here("Final_Project_Data/Stadiums.xls")))
+
+Attendance_2020 <- clean_names(read_excel(here::here("Final_Project_Data/2020Attendance.xls")))
 ```
 
 ### Data Limitations
 
+There are many limitations, such as there not being recorded stadiums, stadium capacity, and the size of the city. There may also be bias in the way that attendance is recorded to make the league seem to have a better performance or for headlines. The methodology that follows also may not be applicable to other sports as the number of games may be vital to whether people attend a game, whether due to fatigue from too many games or better opportunities; however, due to similarities, college football may be applicable. In addition, preseason and playoff data aren't included; however, the methodology that follows may be applicable to them.
+
 ## Data Wrangling (Optional Section)
 
 ```{r}
+Attendance_2020 <- Attendance_2020 %>%
+  mutate(across(starts_with("week_"), as.numeric)) %>%
+  pivot_longer(
+    cols = starts_with("week_"),
+    names_prefix = "week_",
+    names_to = "week",
+    values_to = "weekly_attendance"
+  )
 attendance$newteam <- str_c(attendance$team, attendance$team_name, sep = " ", collapse = NULL)
 standings$newteam <- str_c(standings$team, standings$team_name, sep = " ", collapse = NULL)
 games$week <- as.numeric(games$week)
@@ -119,6 +134,46 @@ data_test <- data %>%
 ```
 
 ## Exploratory Data Analysis
+
+```{r}
+attendance %>%
+  miss_var_summary()
+count(attendance)/638
+```
+
+This corresponds one-to-one to the fact that each team is given one week of the seventeen-week season as a bye week.
+
+```{r}
+data_train %>%
+summarize(
+number = n(),
+weekly_attendance_mean = mean(weekly_attendance, na.rm = TRUE),
+weekly_attendance_sd = sd(weekly_attendance, na.rm = TRUE),
+weekly_attendance_min = min(weekly_attendance, na.rm = TRUE),
+weekly_attendance_q1 = quantile(weekly_attendance, 0.25, na.rm = TRUE),
+weekly_attendance_median = median(weekly_attendance, na.rm = TRUE),
+weekly_attendance_q3 = quantile(weekly_attendance, 0.75, na.rm = TRUE),
+weekly_attendance_max = max(weekly_attendance, na.rm = TRUE)
+)
+
+ggplot(data = data_train,
+       mapping = aes(x = weekly_attendance)
+) +
+  geom_histogram(center = 57500,
+                 binwidth = 5000)
+
+ggplot(data = data_train,
+mapping = aes(y = weekly_attendance)
+) +
+geom_boxplot()
+```
+
+Through the table, we can get the total number of values, mean, standard deviation, minimum, median, maximum, and the value at the $25\%$ and $75%$ of attendance in training data. Through the exact values, we notice that attendance is centered between 63,000 and 73,000 people. In addition, all the values are plausible, as there are no recorded negative or exceedingly high values. The histogram shows no large breaks between different recorded attendances, but as the values get more extreme, there are fewer recorded games with such attendance. The boxplot shows a large number of outliers.
+
+```{r}
+
+```
+
 
 ## Modeling
 
@@ -315,7 +370,6 @@ ggplot(treeR_pred_check, aes(x = weekly_attendance, y = .pred)) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0, color = "blue")
 ```
-
 
 ## Insights
 

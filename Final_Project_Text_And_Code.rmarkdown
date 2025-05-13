@@ -2,7 +2,15 @@
 title: "Replace this with an interesting title"
 ---
 
+
+
+
+
 ## Motivation and Context
+
+
+
+
 
 ```{r}
 #| label: do this first
@@ -11,6 +19,10 @@ title: "Replace this with an interesting title"
 
 here::i_am("Final_Project_Text_And_Code.qmd")
 ```
+
+
+
+
 
 This section describes what you are investigating in your project and why you are investigating it. You should provide enough contextual background and information that someone with a limited background can understand the broad outlines of the topic being investigated.
 
@@ -23,6 +35,10 @@ The background to understand NFL game attendance is the locations of stadiums an
 The main objective of this project is to predict what the attendance per game would have been in the 2020 season if there wasn't a COVID-19 restriction.
 
 ## Packages Used In This Analysis
+
+
+
+
 
 ```{r}
 #| label: load packages
@@ -50,6 +66,10 @@ library(naniar)
 ```
 
 
+
+
+
+
 | Package | Use |
 |-------------------------------|----------------------------------------|
 | [here](https://github.com/jennybc/here_here) | to easily load and save data |
@@ -70,6 +90,10 @@ Pro Football Reference https://www.pro-football-reference.com/
 
 NFL Website https://www.nfl.com/
 
+
+
+
+
 ```{r}
 #| label: import data
 #| warning: false
@@ -82,11 +106,19 @@ stadiums <- clean_names(read_excel(here::here("Final_Project_Data/Stadiums.xls")
 Attendance_2020 <- clean_names(read_excel(here::here("Final_Project_Data/2020Attendance.xls")))
 ```
 
+
+
+
+
 ### Data Limitations
 
 There are many limitations, such as there not being recorded stadiums, stadium capacity, and the size of the city. There may also be bias in the way that attendance is recorded to make the league seem to have a better performance or for headlines. The methodology that follows also may not be applicable to other sports as the number of games may be vital to whether people attend a game, whether due to fatigue from too many games or better opportunities; however, due to similarities, college football may be applicable. In addition, preseason and playoff data aren't included; however, the methodology that follows may be applicable to them.
 
 ## Data Wrangling
+
+
+
+
 
 ```{r}
 Attendance_2020 <- Attendance_2020 %>%
@@ -133,7 +165,15 @@ data_test <- data %>%
   filter(year == 2019)
 ```
 
+
+
+
+
 ## Exploratory Data Analysis
+
+
+
+
 
 ```{r}
 attendance %>%
@@ -141,7 +181,15 @@ attendance %>%
 count(attendance)/638
 ```
 
+
+
+
+
 This corresponds one-to-one to the fact that each team is given one week of the seventeen-week season as a bye week.
+
+
+
+
 
 ```{r}
 data_train %>%
@@ -168,7 +216,15 @@ mapping = aes(y = weekly_attendance)
 geom_boxplot()
 ```
 
+
+
+
+
 Through the table, we can get the total number of values, mean, standard deviation, minimum, median, maximum, and the value at the $25\%$ and $75%$ of attendance in training data. Through the exact values, we notice that attendance is centered between 63,000 and 73,000 people. In addition, all the values are plausible, as there are no recorded negative or exceedingly high values. The histogram shows no large breaks between different recorded attendances, but as the values get more extreme, there are fewer recorded games with such attendance. The boxplot shows a large number of outliers.
+
+
+
+
 
 ```{r}
 data_train %>%
@@ -196,9 +252,17 @@ ggplot(data = data_train,
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 
+
+
+
+
 The table above displays the number of games recorded for each home_team as we want to see how many teams are recorded in our data and the names, as there have been teams in the NFL that have changed names. In addition, we can see that there are 152 games recorded for each team, except the Chargers, Rams, and Texans. However, the Chargers and Rams have 152 when adding their other name, leaving only the Texans with 16 home games missing. This makes sense as the Texans joined in the 2002 season.
 
 Through our next table, we can get the total number of values, mean, standard deviation, minimum, median, maximum, and the value at the $25\%$ and $75%$ of attendance broken into teams in our training data. The table provides exact values, so we can see the extreme values from the following box plot. In the box plot, we can see different teams of varying centers and distributions. In addition, we can see that the Los Angeles Chargers and Arizona Cardinals both have a single extremely large attendance record, which is 84301 and 103467 people, respectively. It can also be seen that the Dallas Cowboys almost always have extremely high attendance compared to other teams. Therefore, due to the differences between teams, home_team is likely a significant predictor for weekly_attendance.
+
+
+
+
 
 
 ```{r}
@@ -235,9 +299,17 @@ y = weekly_attendance
 geom_point()
 ```
 
+
+
+
+
 The above plots show that attendance doesn't change significantly based on the day, week, or year the game is played.
 
 ## More Data Wrangling
+
+
+
+
 
 ```{r}
 data_train <- data_train %>%
@@ -266,7 +338,15 @@ data_test <- data_test %>%
   select(-last_word)
 ```
 
+
+
+
+
 ## Modeling
+
+
+
+
 
 ```{r}
 lm1 <- lm(weekly_attendance ~ home_team + away_team + week + year + day + time, data = data_train)
@@ -462,8 +542,13 @@ ggplot(treeR_pred_check, aes(x = weekly_attendance, y = .pred)) +
   geom_abline(slope = 1, intercept = 0, color = "blue")
 ```
 
+
+
+
+
 ## Insights
 
 ### Limitations and Future Work
 
 ### Reflection (Optional Subsection)
+

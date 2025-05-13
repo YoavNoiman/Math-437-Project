@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: docs
+  render: 
+    - index.qmd
+    - Final_Project_Text_And_Code.qmd
 
 website:
   title: "Home"
@@ -16,10 +19,9 @@ website:
       
 format:
   html:
-    backgroundcolor: "Gold"
-    fontcolor: "DarkBlue"
+    backgroundcolor: "White"
+    fontcolor: "Black"
     linkcolor: "Orange"
     mainfont: "TimesNewRoman"
     fontsize: 20px
     theme: [cosmo, styles.scss]
-

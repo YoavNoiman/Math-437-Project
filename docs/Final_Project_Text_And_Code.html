@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Replace this with an interesting title – Home</title>
+<title>NFL Attendance – Home</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -131,7 +131,7 @@ window.Quarto = {
 };
 </script>
 
-<meta property="og:title" content="Replace this with an interesting title – Home">
+<meta property="og:title" content="NFL Attendance – Home">
 <meta property="og:description" content="">
 <meta property="og:image" content="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-7-1.png">
 <meta property="og:site_name" content="Home">
@@ -180,7 +180,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Replace this with an interesting title</h1>
+<h1 class="title">NFL Attendance</h1>
 </div>
 
 
@@ -230,6 +230,10 @@ window.Quarto = {
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(naniar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 43%">
+<col style="width: 56%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Package</th>
@@ -238,27 +242,12 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="https://github.com/jennybc/here_here">here</a></td>
-<td>to easily load and save data</td>
-</tr>
-<tr class="even">
-<td><a href="https://readr.tidyverse.org/">readr</a></td>
-<td>to import the CSV file data</td>
-</tr>
-<tr class="odd">
-<td><a href="https://dplyr.tidyverse.org/">dplyr</a></td>
-<td>to massage and summarize data</td>
-</tr>
-<tr class="even">
-<td><a href="https://rsample.tidymodels.org/">rsample</a></td>
-<td>to split data into training and test sets</td>
-</tr>
-<tr class="odd">
-<td><a href="https://ggplot2.tidyverse.org/">ggplot2</a></td>
-<td>to create nice-looking and informative graphs</td>
+<td>[readr]</td>
+<td>read in csv</td>
 </tr>
 </tbody>
 </table>
+<p>…</p>
 <p>FINISH</p>
 </section>
 <section id="data-description" class="level2">
@@ -281,8 +270,8 @@ window.Quarto = {
 <p>There are many limitations, such as there not being recorded stadiums, stadium capacity, and the size of the city. There may also be bias in the way that attendance is recorded to make the league seem to have a better performance or for headlines. The methodology that follows also may not be applicable to other sports as the number of games may be vital to whether people attend a game, whether due to fatigue from too many games or better opportunities; however, due to similarities, college football may be applicable. In addition, preseason and playoff data aren’t included; however, the methodology that follows may be applicable to them.</p>
 </section>
 </section>
-<section id="data-wrangling-optional-section" class="level2">
-<h2 class="anchored" data-anchor-id="data-wrangling-optional-section">Data Wrangling (Optional Section)</h2>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">Data Wrangling</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Attendance_2020 <span class="ot">&lt;-</span> Attendance_2020 <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">"week_"</span>), as.numeric)) <span class="sc">%&gt;%</span></span>
@@ -300,9 +289,12 @@ Caused by warning:
 ! NAs introduced by coercion
 ℹ Run `dplyr::last_dplyr_warnings()` to see the 8 remaining warnings.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>attendance<span class="sc">$</span>newteam <span class="ot">&lt;-</span> <span class="fu">str_c</span>(attendance<span class="sc">$</span>team, attendance<span class="sc">$</span>team_name, <span class="at">sep =</span> <span class="st">" "</span>, <span class="at">collapse =</span> <span class="cn">NULL</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>standings<span class="sc">$</span>newteam <span class="ot">&lt;-</span> <span class="fu">str_c</span>(standings<span class="sc">$</span>team, standings<span class="sc">$</span>team_name, <span class="at">sep =</span> <span class="st">" "</span>, <span class="at">collapse =</span> <span class="cn">NULL</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>games<span class="sc">$</span>week <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(games<span class="sc">$</span>week)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Attendance_2020<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="dv">2020</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Attendance_2020<span class="sc">$</span>home_team <span class="ot">&lt;-</span> Attendance_2020<span class="sc">$</span>tm</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>Attendance_2020<span class="sc">$</span>week <span class="ot">&lt;-</span> <span class="fu">as.double</span>(Attendance_2020<span class="sc">$</span>week)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>attendance<span class="sc">$</span>newteam <span class="ot">&lt;-</span> <span class="fu">str_c</span>(attendance<span class="sc">$</span>team, attendance<span class="sc">$</span>team_name, <span class="at">sep =</span> <span class="st">" "</span>, <span class="at">collapse =</span> <span class="cn">NULL</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>standings<span class="sc">$</span>newteam <span class="ot">&lt;-</span> <span class="fu">str_c</span>(standings<span class="sc">$</span>team, standings<span class="sc">$</span>team_name, <span class="at">sep =</span> <span class="st">" "</span>, <span class="at">collapse =</span> <span class="cn">NULL</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>games<span class="sc">$</span>week <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(games<span class="sc">$</span>week)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: NAs introduced by coercion</code></pre>
 </div>
@@ -409,12 +401,194 @@ Caused by warning:
 </div>
 </div>
 <p>Through the table, we can get the total number of values, mean, standard deviation, minimum, median, maximum, and the value at the <span class="math inline">\(25\%\)</span> and <span class="math inline">\(75%\)</span> of attendance in training data. Through the exact values, we notice that attendance is centered between 63,000 and 73,000 people. In addition, all the values are plausible, as there are no recorded negative or exceedingly high values. The histogram shows no large breaks between different recorded attendances, but as the values get more extreme, there are fewer recorded games with such attendance. The boxplot shows a large number of outliers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data_train <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a> <span class="fu">group_by</span>(home_team) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 34 × 2
+# Groups:   home_team [34]
+   home_team              n
+   &lt;chr&gt;              &lt;int&gt;
+ 1 Arizona Cardinals    152
+ 2 Atlanta Falcons      152
+ 3 Baltimore Ravens     152
+ 4 Buffalo Bills        152
+ 5 Carolina Panthers    152
+ 6 Chicago Bears        152
+ 7 Cincinnati Bengals   152
+ 8 Cleveland Browns     152
+ 9 Dallas Cowboys       152
+10 Denver Broncos       152
+# ℹ 24 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data_train <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(home_team) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">number =</span> <span class="fu">n</span>(),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekly_attendance_mean =</span> <span class="fu">mean</span>(weekly_attendance, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekly_attendance_sd =</span> <span class="fu">sd</span>(weekly_attendance, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekly_attendance_min =</span> <span class="fu">min</span>(weekly_attendance, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekly_attendance_q1 =</span> <span class="fu">quantile</span>(weekly_attendance, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekly_attendance_median =</span> <span class="fu">median</span>(weekly_attendance, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekly_attendance_q3 =</span> <span class="fu">quantile</span>(weekly_attendance, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekly_attendance_max =</span> <span class="fu">max</span>(weekly_attendance, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 34 × 9
+   home_team          number weekly_attendance_mean weekly_attendance_sd
+   &lt;chr&gt;               &lt;int&gt;                  &lt;dbl&gt;                &lt;dbl&gt;
+ 1 Arizona Cardinals     152                 56317.               12721.
+ 2 Atlanta Falcons       152                 67947.                6497.
+ 3 Baltimore Ravens      152                 70570.                 779.
+ 4 Buffalo Bills         152                 67329.                7471.
+ 5 Carolina Panthers     152                 73177.                 916.
+ 6 Chicago Bears         152                 62261.                2167.
+ 7 Cincinnati Bengals    152                 60196.                7078.
+ 8 Cleveland Browns      152                 69573.                4000.
+ 9 Dallas Cowboys        152                 77249.               13651.
+10 Denver Broncos        152                 76002.                 894.
+# ℹ 24 more rows
+# ℹ 5 more variables: weekly_attendance_min &lt;dbl&gt;, weekly_attendance_q1 &lt;dbl&gt;,
+#   weekly_attendance_median &lt;dbl&gt;, weekly_attendance_q3 &lt;dbl&gt;,
+#   weekly_attendance_max &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data_train, </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> home_team,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> weekly_attendance</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>       ) <span class="sc">+</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span> </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The table above displays the number of games recorded for each home_team as we want to see how many teams are recorded in our data and the names, as there have been teams in the NFL that have changed names. In addition, we can see that there are 152 games recorded for each team, except the Chargers, Rams, and Texans. However, the Chargers and Rams have 152 when adding their other name, leaving only the Texans with 16 home games missing. This makes sense as the Texans joined in the 2002 season.</p>
+<p>Through our next table, we can get the total number of values, mean, standard deviation, minimum, median, maximum, and the value at the <span class="math inline">\(25\%\)</span> and <span class="math inline">\(75%\)</span> of attendance broken into teams in our training data. The table provides exact values, so we can see the extreme values from the following box plot. In the box plot, we can see different teams of varying centers and distributions. In addition, we can see that the Los Angeles Chargers and Arizona Cardinals both have a single extremely large attendance record, which is 84301 and 103467 people, respectively. It can also be seen that the Dallas Cowboys almost always have extremely high attendance compared to other teams. Therefore, due to the differences between teams, home_team is likely a significant predictor for weekly_attendance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>data_train2 <span class="ot">&lt;-</span> data_train</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>data_train2<span class="sc">$</span>year <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_train<span class="sc">$</span>year)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>data_train2<span class="sc">$</span>week <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_train<span class="sc">$</span>week)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data_train2,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="at">mapping =</span> <span class="fu">aes</span>(</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="at">x =</span> year,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="at">y =</span> weekly_attendance</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data_train,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="at">mapping =</span> <span class="fu">aes</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="at">x =</span> day,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="at">y =</span> weekly_attendance</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data_train2,</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="at">mapping =</span> <span class="fu">aes</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="at">x =</span> week,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="at">y =</span> weekly_attendance</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data_train,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="at">mapping =</span> <span class="fu">aes</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="at">x =</span> simple_rating,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="at">y =</span> weekly_attendance</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> data_train,</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="at">mapping =</span> <span class="fu">aes</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="at">x =</span> time,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="at">y =</span> weekly_attendance</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The above plots show that attendance doesn’t change significantly based on the simple rating, day, week, or year the game is played; however, it is impacted by time, but since there are different time zones, it doesn’t make much sense to use.</p>
+</section>
+<section id="more-data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="more-data-wrangling">More Data Wrangling</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>data_train <span class="ot">&lt;-</span> data_train <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">last_word =</span> <span class="fu">str_extract</span>(home_team, <span class="st">"</span><span class="sc">\\</span><span class="st">w+$"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">home_team =</span> <span class="fu">ifelse</span>(<span class="fu">duplicated</span>(last_word) <span class="sc">|</span> <span class="fu">duplicated</span>(last_word, <span class="at">fromLast =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                            last_word, </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                            home_team)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>last_word)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>data_train <span class="ot">&lt;-</span> data_train <span class="sc">%&gt;%</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">last_word =</span> <span class="fu">str_extract</span>(away_team, <span class="st">"</span><span class="sc">\\</span><span class="st">w+$"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">away_team =</span> <span class="fu">ifelse</span>(<span class="fu">duplicated</span>(last_word) <span class="sc">|</span> <span class="fu">duplicated</span>(last_word, <span class="at">fromLast =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>                            last_word, </span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>                            away_team)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>last_word)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>data_test <span class="ot">&lt;-</span> data_test <span class="sc">%&gt;%</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">last_word =</span> <span class="fu">str_extract</span>(home_team, <span class="st">"</span><span class="sc">\\</span><span class="st">w+$"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">home_team =</span> <span class="fu">ifelse</span>(<span class="fu">duplicated</span>(last_word) <span class="sc">|</span> <span class="fu">duplicated</span>(last_word, <span class="at">fromLast =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>                            last_word, </span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>                            home_team)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>last_word)</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>data_test <span class="ot">&lt;-</span> data_test <span class="sc">%&gt;%</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">last_word =</span> <span class="fu">str_extract</span>(away_team, <span class="st">"</span><span class="sc">\\</span><span class="st">w+$"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">away_team =</span> <span class="fu">ifelse</span>(<span class="fu">duplicated</span>(last_word) <span class="sc">|</span> <span class="fu">duplicated</span>(last_word, <span class="at">fromLast =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>                            last_word, </span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>                            away_team)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>last_word)</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>Attendance_2020 <span class="ot">&lt;-</span> Attendance_2020 <span class="sc">%&gt;%</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">last_word =</span> <span class="fu">str_extract</span>(home_team, <span class="st">"</span><span class="sc">\\</span><span class="st">w+$"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">home_team =</span> <span class="fu">ifelse</span>(<span class="fu">duplicated</span>(last_word) <span class="sc">|</span> <span class="fu">duplicated</span>(last_word, <span class="at">fromLast =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>                            last_word, </span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>                            home_team)) <span class="sc">%&gt;%</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>last_word)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="modeling" class="level2">
 <h2 class="anchored" data-anchor-id="modeling">Modeling</h2>
+<p>I am performing a k-nearest neighbors as assumptions for linear regression has failed the condition of equal variance. K-nearest-neighbors is non-parametric so it has looser conditions and works by using the training set to identify the k points closest to the point we want to predict. Then an average is taken in order to make our prediction.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(weekly_attendance <span class="sc">~</span> home_team <span class="sc">+</span> away_team <span class="sc">+</span> week <span class="sc">+</span> year, <span class="at">data =</span> data_train)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(weekly_attendance <span class="sc">~</span> home_team <span class="sc">+</span> away_team <span class="sc">+</span> week <span class="sc">+</span> year, <span class="at">data =</span> data_train)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -423,296 +597,160 @@ lm(formula = weekly_attendance ~ home_team + away_team + week +
 
 Residuals:
    Min     1Q Median     3Q    Max 
--37285  -1534    484   2609  55136 
+-37346  -1504    504   2706  47171 
 
 Coefficients:
-                                Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept)                   -179456.19   31012.48  -5.787 7.64e-09 ***
-home_teamAtlanta Falcons        11795.95     666.82  17.690  &lt; 2e-16 ***
-home_teamBaltimore Ravens       14299.53     672.91  21.250  &lt; 2e-16 ***
-home_teamBuffalo Bills          10802.96     672.73  16.058  &lt; 2e-16 ***
-home_teamCarolina Panthers      16866.56     667.07  25.285  &lt; 2e-16 ***
-home_teamChicago Bears           5777.62     666.50   8.669  &lt; 2e-16 ***
-home_teamCincinnati Bengals      3853.27     672.82   5.727 1.08e-08 ***
-home_teamCleveland Browns       13239.40     672.67  19.682  &lt; 2e-16 ***
-home_teamDallas Cowboys         21062.68     666.14  31.619  &lt; 2e-16 ***
-home_teamDenver Broncos         19719.57     671.56  29.364  &lt; 2e-16 ***
-home_teamDetroit Lions           5729.20     668.62   8.569  &lt; 2e-16 ***
-home_teamGreen Bay Packers      15056.33     666.59  22.587  &lt; 2e-16 ***
-home_teamHouston Texans         14774.89     691.62  21.363  &lt; 2e-16 ***
-home_teamIndianapolis Colts      5528.90     671.90   8.229 2.42e-16 ***
-home_teamJacksonville Jaguars    6598.97     672.32   9.815  &lt; 2e-16 ***
-home_teamKansas City Chiefs     18480.72     671.56  27.519  &lt; 2e-16 ***
-home_teamLos Angeles Chargers  -28119.00    1521.98 -18.475  &lt; 2e-16 ***
-home_teamLos Angeles Rams       16010.63    1271.88  12.588  &lt; 2e-16 ***
-home_teamMiami Dolphins         12149.08     672.88  18.055  &lt; 2e-16 ***
-home_teamMinnesota Vikings       6295.67     667.72   9.429  &lt; 2e-16 ***
-home_teamNew England Patriots   11041.24     672.95  16.407  &lt; 2e-16 ***
-home_teamNew Orleans Saints     13352.03     666.17  20.043  &lt; 2e-16 ***
-home_teamNew York Giants        22290.94     665.98  33.471  &lt; 2e-16 ***
-home_teamNew York Jets          21549.60     672.58  32.040  &lt; 2e-16 ***
-home_teamOakland Raiders         -951.57     671.52  -1.417 0.156539    
-home_teamPhiladelphia Eagles    12034.77     666.60  18.054  &lt; 2e-16 ***
-home_teamPittsburgh Steelers     5945.32     672.78   8.837  &lt; 2e-16 ***
-home_teamSan Diego Chargers      7037.28     690.10  10.198  &lt; 2e-16 ***
-home_teamSan Francisco 49ers    12606.11     663.40  19.002  &lt; 2e-16 ***
-home_teamSeattle Seahawks       10638.91     663.34  16.038  &lt; 2e-16 ***
-home_teamSt. Louis Rams          4982.99     693.68   7.183 7.85e-13 ***
-home_teamTampa Bay Buccaneers    5458.02     666.00   8.195 3.18e-16 ***
-home_teamTennessee Titans       11894.06     672.32  17.691  &lt; 2e-16 ***
-home_teamWashington Redskins    24135.29     666.59  36.207  &lt; 2e-16 ***
-away_teamAtlanta Falcons          970.50     667.23   1.455 0.145869    
-away_teamBaltimore Ravens         929.84     673.23   1.381 0.167292    
-away_teamBuffalo Bills            679.67     672.76   1.010 0.312421    
-away_teamCarolina Panthers         63.31     667.65   0.095 0.924452    
-away_teamChicago Bears           1959.14     667.02   2.937 0.003328 ** 
-away_teamCincinnati Bengals       323.28     673.28   0.480 0.631140    
-away_teamCleveland Browns         406.39     673.35   0.604 0.546176    
-away_teamDallas Cowboys          3158.48     666.80   4.737 2.23e-06 ***
-away_teamDenver Broncos          2195.38     671.65   3.269 0.001088 ** 
-away_teamDetroit Lions           1269.47     669.01   1.898 0.057818 .  
-away_teamGreen Bay Packers       2843.77     666.80   4.265 2.04e-05 ***
-away_teamHouston Texans           -12.39     691.72  -0.018 0.985705    
-away_teamIndianapolis Colts      1562.14     671.76   2.325 0.020091 *  
-away_teamJacksonville Jaguars    -154.30     672.74  -0.229 0.818598    
-away_teamKansas City Chiefs       506.81     671.49   0.755 0.450441    
-away_teamLos Angeles Chargers     717.78    1522.28   0.472 0.637295    
-away_teamLos Angeles Rams        1158.26    1271.70   0.911 0.362448    
-away_teamMiami Dolphins          1623.40     672.49   2.414 0.015815 *  
-away_teamMinnesota Vikings       1570.97     667.93   2.352 0.018713 *  
-away_teamNew England Patriots    2932.91     673.52   4.355 1.36e-05 ***
-away_teamNew Orleans Saints      1036.38     666.55   1.555 0.120050    
-away_teamNew York Giants         1342.50     666.38   2.015 0.044001 *  
-away_teamNew York Jets           1500.36     673.53   2.228 0.025952 *  
-away_teamOakland Raiders         1654.57     671.86   2.463 0.013826 *  
-away_teamPhiladelphia Eagles     1576.65     666.68   2.365 0.018073 *  
-away_teamPittsburgh Steelers     2920.99     673.48   4.337 1.47e-05 ***
-away_teamSan Diego Chargers       891.14     690.68   1.290 0.197031    
-away_teamSan Francisco 49ers     1449.68     663.80   2.184 0.029018 *  
-away_teamSeattle Seahawks         804.63     663.52   1.213 0.225322    
-away_teamSt. Louis Rams           620.09     693.50   0.894 0.371283    
-away_teamTampa Bay Buccaneers     869.28     666.30   1.305 0.192081    
-away_teamTennessee Titans        1027.05     672.39   1.527 0.126712    
-away_teamWashington Redskins      641.14     666.73   0.962 0.336294    
-week                              -62.41      16.55  -3.772 0.000164 ***
-year                              117.02      15.43   7.583 4.05e-14 ***
+                      Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         -129383.93   32213.38  -4.016 6.00e-05 ***
+home_teamBears        -6831.61     709.36  -9.631  &lt; 2e-16 ***
+home_teamBengals      -8722.95     714.63 -12.206  &lt; 2e-16 ***
+home_teamBills        -1815.88     714.15  -2.543 0.011031 *  
+home_teamBroncos       7113.37     713.17   9.974  &lt; 2e-16 ***
+home_teamBrowns         647.62     714.51   0.906 0.364781    
+home_teamBuccaneers   -7159.81     707.19 -10.124  &lt; 2e-16 ***
+home_teamCardinals   -12601.05     704.10 -17.897  &lt; 2e-16 ***
+home_teamChargers     -9251.53     712.84 -12.978  &lt; 2e-16 ***
+home_teamChiefs        5889.38     713.07   8.259  &lt; 2e-16 ***
+home_teamColts        -7077.63     713.90  -9.914  &lt; 2e-16 ***
+home_teamCowboys       8484.63     707.90  11.986  &lt; 2e-16 ***
+home_teamDolphins      -454.53     714.33  -0.636 0.524612    
+home_teamEagles        -556.37     708.78  -0.785 0.432512    
+home_teamFalcons       -813.02     707.52  -1.149 0.250567    
+home_teamGiants        9716.43     708.13  13.721  &lt; 2e-16 ***
+home_teamJaguars      -5998.42     713.77  -8.404  &lt; 2e-16 ***
+home_teamJets          8951.72     713.97  12.538  &lt; 2e-16 ***
+home_teamLions        -6874.56     708.46  -9.703  &lt; 2e-16 ***
+home_teamPackers       2450.67     708.61   3.458 0.000548 ***
+home_teamPanthers      4254.78     707.01   6.018 1.90e-09 ***
+home_teamPatriots     -1559.39     714.18  -2.183 0.029051 *  
+home_teamRaiders     -13554.55     713.24 -19.004  &lt; 2e-16 ***
+home_teamRams         -5861.87     704.93  -8.316  &lt; 2e-16 ***
+home_teamRavens        1719.06     714.82   2.405 0.016215 *  
+home_teamRedskins     11531.61     708.03  16.287  &lt; 2e-16 ***
+home_teamSaints         749.63     708.59   1.058 0.290147    
+home_teamSeahawks     -1941.52     703.81  -2.759 0.005827 ** 
+home_teamSteelers     -6611.24     714.95  -9.247  &lt; 2e-16 ***
+home_teamTexans        2195.99     734.53   2.990 0.002807 ** 
+home_teamTitans        -729.68     714.16  -1.022 0.306961    
+home_teamVikings      -6311.00     708.00  -8.914  &lt; 2e-16 ***
+away_teamBears          639.80     709.57   0.902 0.367279    
+away_teamBengals      -1103.98     714.67  -1.545 0.122477    
+away_teamBills         -718.37     714.30  -1.006 0.314611    
+away_teamBroncos        845.37     712.79   1.186 0.235681    
+away_teamBrowns       -1095.87     714.53  -1.534 0.125171    
+away_teamBuccaneers    -438.23     707.20  -0.620 0.535504    
+away_teamCardinals    -1426.36     704.53  -2.025 0.042967 *  
+away_teamChargers      -413.54     713.00  -0.580 0.561935    
+away_teamChiefs        -769.12     712.78  -1.079 0.280622    
+away_teamColts          360.48     713.06   0.506 0.613203    
+away_teamCowboys       1858.33     708.11   2.624 0.008709 ** 
+away_teamDolphins       313.49     713.89   0.439 0.660587    
+away_teamEagles         165.44     708.10   0.234 0.815277    
+away_teamFalcons       -287.35     707.35  -0.406 0.684584    
+away_teamGiants          92.66     708.35   0.131 0.895930    
+away_teamJaguars      -1393.94     713.71  -1.953 0.050867 .  
+away_teamJets           264.98     714.76   0.371 0.710857    
+away_teamLions          -14.71     708.22  -0.021 0.983426    
+away_teamPackers       1597.61     708.77   2.254 0.024238 *  
+away_teamPanthers     -1183.20     707.23  -1.673 0.094393 .  
+away_teamPatriots      1696.47     714.49   2.374 0.017617 *  
+away_teamRaiders        316.53     713.02   0.444 0.657115    
+away_teamRams          -558.76     704.94  -0.793 0.428033    
+away_teamRavens        -497.19     714.62  -0.696 0.486622    
+away_teamRedskins      -843.03     707.52  -1.192 0.233507    
+away_teamSaints        -218.67     708.06  -0.309 0.757463    
+away_teamSeahawks      -387.10     703.95  -0.550 0.582412    
+away_teamSteelers      1679.34     714.90   2.349 0.018862 *  
+away_teamTexans       -1167.05     734.27  -1.589 0.112037    
+away_teamTitans        -397.90     714.00  -0.557 0.577355    
+away_teamVikings        312.70     707.69   0.442 0.658604    
+week                    -60.65      17.56  -3.454 0.000558 ***
+year                     99.01      16.03   6.177 7.08e-10 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 5741 on 4779 degrees of freedom
-Multiple R-squared:  0.5895,    Adjusted R-squared:  0.5837 
-F-statistic: 100.9 on 68 and 4779 DF,  p-value: &lt; 2.2e-16</code></pre>
+Residual standard error: 6093 on 4783 degrees of freedom
+Multiple R-squared:  0.5372,    Adjusted R-squared:  0.531 
+F-statistic: 86.75 on 64 and 4783 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lm1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-4.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>linreg_model <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>(<span class="at">mode =</span> <span class="st">"regression"</span>, <span class="at">engine =</span> <span class="st">"lm"</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>knn_model <span class="ot">&lt;-</span> <span class="fu">nearest_neighbor</span>(<span class="at">mode =</span> <span class="st">"regression"</span>,</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">engine =</span> <span class="st">"kknn"</span>,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">neighbors =</span> <span class="dv">8</span>, <span class="at">dist_power =</span> <span class="dv">2</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>linear_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  weekly_attendance <span class="sc">~</span> home_team <span class="sc">+</span> away_team <span class="sc">+</span> week <span class="sc">+</span> year, <span class="co"># response ~ predictors</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_train</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>quadratic_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  weekly_attendance <span class="sc">~</span> home_team <span class="sc">+</span> away_team <span class="sc">+</span> week <span class="sc">+</span> year, <span class="co"># response ~ predictors</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_train</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_poly</span>(week, <span class="at">degree =</span> <span class="dv">2</span>)</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>interaction_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(</span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  weekly_attendance <span class="sc">~</span> home_team <span class="sc">+</span> away_team <span class="sc">+</span> week <span class="sc">+</span> year, <span class="co"># response ~ predictors</span></span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_train</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_interact</span>(<span class="at">terms =</span> <span class="sc">~</span>week<span class="sc">:</span>year) <span class="co"># add HR:BB interaction term</span></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>knn_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  weekly_attendance <span class="sc">~</span> home_team <span class="sc">+</span> away_team <span class="sc">+</span> week <span class="sc">+</span> year,</span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_train</span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span></span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>all_models <span class="ot">&lt;-</span> <span class="fu">workflow_set</span>(</span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">preproc =</span> <span class="fu">list</span>(<span class="at">linear =</span> linear_recipe, <span class="at">quadratic =</span> quadratic_recipe,</span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>                 <span class="at">interaction =</span> interaction_recipe, <span class="at">knn =</span> knn_recipe),</span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">models =</span> <span class="fu">list</span>(<span class="at">lr =</span> linreg_model, <span class="at">lr =</span> linreg_model,</span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>                <span class="at">lr =</span> linreg_model, <span class="at">knn =</span> knn_model),</span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">cross =</span> <span class="cn">FALSE</span> <span class="co"># don't mix knn recipes with linear models or vice-versa</span></span>
-<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>all_models</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A workflow set/tibble: 4 × 4
-  wflow_id       info             option    result    
-  &lt;chr&gt;          &lt;list&gt;           &lt;list&gt;    &lt;list&gt;    
-1 linear_lr      &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
-2 quadratic_lr   &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
-3 interaction_lr &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
-4 knn_knn        &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1112</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>data_cv <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(data_train, <span class="at">v =</span> <span class="dv">10</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>all_models <span class="ot">&lt;-</span> all_models <span class="sc">|&gt;</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow_map</span>(<span class="st">"fit_resamples"</span>,</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">resamples =</span> data_cv,</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">metrics =</span> <span class="fu">metric_set</span>(rmse, mae),</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">verbose =</span> <span class="cn">TRUE</span>) <span class="co"># lets you know where you are in the fitting process</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i 1 of 4 resampling: linear_lr</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✔ 1 of 4 resampling: linear_lr (385ms)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i 2 of 4 resampling: quadratic_lr</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✔ 2 of 4 resampling: quadratic_lr (430ms)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i 3 of 4 resampling: interaction_lr</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✔ 3 of 4 resampling: interaction_lr (399ms)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i 4 of 4 resampling: knn_knn</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✔ 4 of 4 resampling: knn_knn (13.7s)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>knn_model2 <span class="ot">&lt;-</span> <span class="fu">nearest_neighbor</span>(<span class="at">mode =</span> <span class="st">"regression"</span>, </span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                               <span class="at">engine =</span> <span class="st">"kknn"</span>,</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">neighbors =</span> <span class="fu">tune</span>(), </span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">dist_power =</span> <span class="dv">2</span>)</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>knn.grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">neighbors =</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="dv">20</span>, <span class="at">by =</span> <span class="dv">1</span>))</span>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>knn_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  weekly_attendance <span class="sc">~</span> home_team <span class="sc">+</span> away_team <span class="sc">+</span> week <span class="sc">+</span> year,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_train</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>(), <span class="at">one_hot =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>all_models2 <span class="ot">&lt;-</span> <span class="fu">workflow_set</span>(</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">preproc =</span> <span class="fu">list</span>(<span class="at">linear =</span> linear_recipe, </span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">quadratic =</span> quadratic_recipe,</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">interaction =</span> interaction_recipe, </span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">knn =</span> knn_recipe),</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">models =</span> <span class="fu">list</span>(<span class="at">lr =</span> linreg_model, </span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">lr =</span> linreg_model,</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">lr =</span> linreg_model,</span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>                <span class="at">knn2 =</span> knn_model2),</span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">cross =</span> <span class="cn">FALSE</span> </span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>knn_model <span class="ot">&lt;-</span> <span class="fu">nearest_neighbor</span>(<span class="at">mode =</span> <span class="st">"regression"</span>, </span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>                               <span class="at">engine =</span> <span class="st">"kknn"</span>,</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>                               <span class="at">neighbors =</span> <span class="fu">tune</span>(), </span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>                               <span class="at">dist_power =</span> <span class="dv">2</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>knn_wflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(knn_model)</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>data_cv <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(data_train, <span class="at">v =</span> <span class="dv">10</span>)</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>knn.grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">neighbors =</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="dv">20</span>, <span class="at">by =</span> <span class="dv">1</span>))</span>
 <span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>all_models2 <span class="ot">&lt;-</span> all_models2 <span class="sc">|&gt;</span></span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># add the grid for JUST the knn model</span></span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">option_add</span>(<span class="at">grid =</span> knn.grid, <span class="at">id =</span> <span class="st">"knn_knn2"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow_map</span>(<span class="st">"tune_grid"</span>,</span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>               <span class="at">resamples =</span> data_cv,</span>
-<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>               <span class="at">metrics =</span> <span class="fu">metric_set</span>(rmse), <span class="co"># can add more</span></span>
-<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>               <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i   No tuning parameters. `fit_resamples()` will be attempted</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i 1 of 4 resampling: linear_lr</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✔ 1 of 4 resampling: linear_lr (432ms)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i   No tuning parameters. `fit_resamples()` will be attempted</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i 2 of 4 resampling: quadratic_lr</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✔ 2 of 4 resampling: quadratic_lr (429ms)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i   No tuning parameters. `fit_resamples()` will be attempted</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i 3 of 4 resampling: interaction_lr</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✔ 3 of 4 resampling: interaction_lr (554ms)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>i 4 of 4 tuning:     knn_knn2</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>✔ 4 of 4 tuning:     knn_knn2 (41.8s)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(all_models2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>knn_wflow <span class="ot">&lt;-</span> knn_wflow <span class="sc">|&gt;</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(knn_recipe)</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>knn_tune <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(knn_model,</span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>knn_recipe,</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="at">resamples =</span> data_cv,</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a><span class="at">grid =</span> knn.grid)</span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(knn_tune)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(all_models2, <span class="at">id =</span> <span class="st">"knn_knn2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-9-6.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rank_results</span>(all_models2) <span class="sc">|&gt;</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(wflow_id, .config, .metric, mean, std_err, rank) <span class="sc">|&gt;</span></span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(.metric, rank)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>knn_best <span class="ot">&lt;-</span> knn_tune <span class="sc">|&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>knn_best</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 23 × 6
-   wflow_id       .config               .metric  mean std_err  rank
-   &lt;chr&gt;          &lt;chr&gt;                 &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt;
- 1 linear_lr      Preprocessor1_Model1  rmse    5785.    161.     1
- 2 quadratic_lr   Preprocessor1_Model1  rmse    5786.    162.     2
- 3 interaction_lr Preprocessor1_Model1  rmse    5787.    161.     3
- 4 knn_knn2       Preprocessor1_Model06 rmse    6526.    197.     4
- 5 knn_knn2       Preprocessor1_Model05 rmse    6535.    198.     5
- 6 knn_knn2       Preprocessor1_Model07 rmse    6542.    196.     6
- 7 knn_knn2       Preprocessor1_Model08 rmse    6569.    194.     7
- 8 knn_knn2       Preprocessor1_Model04 rmse    6582.    199.     8
- 9 knn_knn2       Preprocessor1_Model09 rmse    6594.    191.     9
-10 knn_knn2       Preprocessor1_Model10 rmse    6616.    188.    10
-# ℹ 13 more rows</code></pre>
+<pre><code># A tibble: 1 × 2
+  neighbors .config              
+      &lt;dbl&gt; &lt;chr&gt;                
+1        14 Preprocessor1_Model14</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>best_k <span class="ot">&lt;-</span> all_models2 <span class="sc">|&gt;</span> </span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_workflow_set_result</span>(<span class="at">id =</span> <span class="st">"knn_knn2"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"rmse"</span>)</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>my_best_knn <span class="ot">&lt;-</span> all_models2 <span class="sc">|&gt;</span></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_workflow</span>(<span class="st">"knn_knn2"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(<span class="at">parameters =</span> best_k)</span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>my_best_knn</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>my_best_knn <span class="ot">&lt;-</span> knn_wflow <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(<span class="at">parameters =</span> knn_best)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>my_best_knn</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
 Preprocessor: Recipe
@@ -728,166 +766,102 @@ Model: nearest_neighbor()
 K-Nearest Neighbor Model Specification (regression)
 
 Main Arguments:
-  neighbors = 6
+  neighbors = 14
   dist_power = 2
 
 Computational engine: kknn </code></pre>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>best_model_refit <span class="ot">&lt;-</span> my_best_knn <span class="sc">|&gt;</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> data_cv,</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># save the cross-validated predictions</span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">control_resamples</span>(<span class="at">save_pred =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>predictions_best_model <span class="ot">&lt;-</span> best_model_refit <span class="sc">|&gt;</span></span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>()</span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cal_plot_regression</span>(</span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>  predictions_best_model,</span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> weekly_attendance,</span>
-<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred</span>
-<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>best_model_refit <span class="sc">|&gt;</span></span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cal_validate_linear</span>(</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">save_pred =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">smooth =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="co"># nonlinear smoothing, use smooth = FALSE for linear transformation</span></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>() <span class="sc">|&gt;</span></span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cal_plot_regression</span>(</span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> weekly_attendance,</span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate =</span> .pred</span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>calibrate_knn <span class="ot">&lt;-</span> predictions_best_model <span class="sc">|&gt;</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># instructions for post-processing</span></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cal_estimate_linear</span>(</span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> weekly_attendance,</span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">smooth =</span> <span class="cn">TRUE</span> <span class="co"># nonlinear smoothing</span></span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>knn_fit <span class="ot">&lt;-</span> my_best_knn <span class="sc">|&gt;</span> <span class="fu">fit</span>(</span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_train</span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>knn_test_pred2 <span class="ot">&lt;-</span> knn_fit <span class="sc">|&gt;</span></span>
-<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">new_data =</span> data_test) <span class="sc">|&gt;</span></span>
-<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># apply the post-processing</span></span>
-<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cal_apply</span>(calibrate_knn)</span>
-<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>knn_test_pred2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 256 × 43
-    .pred  .resid  year  week home_team away_team winner tie   day   date  time 
-    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;tim&gt;
- 1 63164.  2.58e2  2019     1 Chicago … Green Ba… Green… &lt;NA&gt;  Thu   Sept… 20:20
- 2 66532.  1.34e3  2019     1 Clevelan… Tennesse… Tenne… &lt;NA&gt;  Sun   Sept… 13:00
- 3 60690.  8.46e3  2019     1 Minnesot… Atlanta … Minne… &lt;NA&gt;  Sun   Sept… 13:00
- 4 69544.  3.09e2  2019     1 Philadel… Washingt… Phila… &lt;NA&gt;  Sun   Sept… 13:00
- 5 64209.  8.60e3  2019     1 Carolina… Los Ange… Los A… &lt;NA&gt;  Sun   Sept… 13:00
- 6 78133.  7.92e2  2019     1 New York… Buffalo … Buffa… &lt;NA&gt;  Sun   Sept… 13:00
- 7 60060.  3.60e3  2019     1 Jacksonv… Kansas C… Kansa… &lt;NA&gt;  Sun   Sept… 13:00
- 8 67733. -2.47e3  2019     1 Miami Do… Baltimor… Balti… &lt;NA&gt;  Sun   Sept… 13:00
- 9 28264.  5.32e0  2019     1 Los Ange… Indianap… Los A… &lt;NA&gt;  Sun   Sept… 16:05
-10 67214.  1.82e3  2019     1 Seattle … Cincinna… Seatt… &lt;NA&gt;  Sun   Sept… 16:05
-# ℹ 246 more rows
-# ℹ 32 more variables: pts_win &lt;dbl&gt;, pts_loss &lt;dbl&gt;, yds_win &lt;dbl&gt;,
-#   turnovers_win &lt;dbl&gt;, yds_loss &lt;dbl&gt;, turnovers_loss &lt;dbl&gt;,
-#   home_team_name &lt;chr&gt;, home_team_city &lt;chr&gt;, away_team_name &lt;chr&gt;,
-#   away_team_city &lt;chr&gt;, team &lt;chr&gt;, team_name &lt;chr&gt;, total &lt;dbl&gt;, home &lt;dbl&gt;,
-#   away &lt;dbl&gt;, weekly_attendance &lt;dbl&gt;, wins &lt;dbl&gt;, loss &lt;dbl&gt;,
-#   points_for &lt;dbl&gt;, points_against &lt;dbl&gt;, points_differential &lt;dbl&gt;, …</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>treeR_model <span class="ot">&lt;-</span> <span class="fu">decision_tree</span>(<span class="at">mode =</span> <span class="st">"regression"</span>, <span class="at">engine =</span> <span class="st">"rpart"</span>,</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">cost_complexity =</span> <span class="fu">tune</span>())</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>treeR_recipe <span class="ot">&lt;-</span> <span class="fu">recipe</span>(</span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>  weekly_attendance <span class="sc">~</span> home_team <span class="sc">+</span> away_team <span class="sc">+</span> week <span class="sc">+</span> year, <span class="co"># response ~ predictors</span></span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_train</span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>treeR_wflow <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
-<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(treeR_model) <span class="sc">|&gt;</span></span>
-<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(treeR_recipe)</span>
-<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>data_kfold <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(data_train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">repeats =</span> <span class="dv">3</span>) </span>
-<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>treeR_tune1 <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(treeR_model, </span>
-<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>                      treeR_recipe, </span>
-<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>                      <span class="at">resamples =</span> data_kfold, </span>
-<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>                      <span class="at">metrics =</span> <span class="fu">metric_set</span>(rmse), <span class="co"># ignore r-squared, we get warning messages</span></span>
-<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>                      <span class="at">grid =</span> <span class="fu">grid_regular</span>(<span class="fu">cost_complexity</span>(<span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">0</span>)), <span class="at">levels =</span> <span class="dv">10</span>))</span>
-<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>treeR_tune1 <span class="sc">|&gt;</span></span>
-<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>() <span class="sc">|&gt;</span> <span class="co"># no need to filter for RMSE because it's the only one </span></span>
-<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> cost_complexity, <span class="at">y =</span> mean)) <span class="sc">+</span> </span>
-<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>treeR_best <span class="ot">&lt;-</span> <span class="fu">select_by_one_std_err</span>(</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  treeR_tune1,</span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric =</span> <span class="st">"rmse"</span>,</span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">desc</span>(cost_complexity)</span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>treeR_best</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 2
-  cost_complexity .config              
-            &lt;dbl&gt; &lt;chr&gt;                
-1           0.001 Preprocessor1_Model01</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>treeR_wflow_final <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(treeR_wflow, <span class="at">parameters =</span> treeR_best) </span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>treeR_pred_check <span class="ot">&lt;-</span> treeR_wflow_final <span class="sc">|&gt;</span></span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(</span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> data_kfold,</span>
-<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># save the cross-validated predictions</span></span>
-<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">control_resamples</span>(<span class="at">save_pred =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>()</span>
-<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(treeR_pred_check, <span class="fu">aes</span>(<span class="at">x =</span> weekly_attendance, <span class="at">y =</span> .pred)) <span class="sc">+</span></span>
-<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"blue"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
+<p>I choose my best model based on the lowest root mean squared error, which we want to minimize as it is calculated as <span class="math inline">\(\sqrt{\frac{1}{n}\sum_{i=1}^n(y_i-\hat{f}(x_i))^2}\)</span>. This is the square root of one over the total number of observations times the sum over the observations of the actual values minus the predicted values squared. Therefore, when the root mean squared error is closer to 0, the actual values are closer to the predicted values.</p>
 </section>
 <section id="insights" class="level2">
 <h2 class="anchored" data-anchor-id="insights">Insights</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>best_model_refit <span class="ot">&lt;-</span> my_best_knn <span class="sc">|&gt;</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> data_cv,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># save the cross-validated predictions</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">control =</span> <span class="fu">control_resamples</span>(<span class="at">save_pred =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>predictions_best_model <span class="ot">&lt;-</span> best_model_refit <span class="sc">|&gt;</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>()</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cal_plot_regression</span>(</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  predictions_best_model,</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> weekly_attendance,</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>best_model_refit <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cal_validate_linear</span>(</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">save_pred =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">smooth =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="co"># nonlinear smoothing, use smooth = FALSE for linear transformation</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>() <span class="sc">|&gt;</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cal_plot_regression</span>(</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> weekly_attendance,</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate =</span> .pred</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_Project_Text_And_Code_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>calibrate_knn <span class="ot">&lt;-</span> predictions_best_model <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># instructions for post-processing</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cal_estimate_linear</span>(</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> weekly_attendance,</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">smooth =</span> <span class="cn">TRUE</span> <span class="co"># nonlinear smoothing</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>knn_fit <span class="ot">&lt;-</span> my_best_knn <span class="sc">|&gt;</span> <span class="fu">fit</span>(</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_train</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>knn_test_pred2 <span class="ot">&lt;-</span> knn_fit <span class="sc">|&gt;</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">new_data =</span> data_test) <span class="sc">|&gt;</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># apply the post-processing</span></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cal_apply</span>(calibrate_knn)</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>clean <span class="ot">&lt;-</span> knn_test_pred2 <span class="sc">%&gt;%</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(.pred, year, week, home_team, away_team, weekly_attendance)</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>clean<span class="sc">$</span>difference <span class="ot">&lt;-</span> (clean<span class="sc">$</span>.pred<span class="sc">-</span>clean<span class="sc">$</span>weekly_attendance)</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>clean <span class="sc">%&gt;%</span></span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort_by</span>(clean<span class="sc">$</span>difference)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 256 × 7
+    .pred  year  week home_team away_team weekly_attendance difference
+    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;                 &lt;dbl&gt;      &lt;dbl&gt;
+ 1 62046.  2019     9 Jaguars   Texans                84771    -22725.
+ 2 66778.  2019     8 Rams      Bengals               83720    -16942.
+ 3 59497.  2019    11 Chargers  Chiefs                76252    -16755.
+ 4 59744.  2019     6 Rams      49ers                 75695    -15951.
+ 5 77231.  2019    10 Cowboys   Vikings               91188    -13957.
+ 6 77282.  2019    15 Cowboys   Rams                  90436    -13154.
+ 7 77524.  2019     3 Cowboys   Dolphins              90127    -12603.
+ 8 79696.  2019    13 Cowboys   Bills                 90445    -10749.
+ 9 61407.  2019    14 Rams      Seahawks              71501    -10094.
+10 61689.  2019     2 Rams      Saints                71460     -9771.
+# ℹ 246 more rows</code></pre>
+</div>
+</div>
+<p>Our test set of 2019 data shows that our model isn’t that great at predicting attendance, except for attendance between 60,000 and 80,000. In fact, it seems to be based on luck. Therefore, since our model isn’t great at predicting the 2019 data we can’t and won’t move onto 2020 data until we get better results.</p>
 <section id="limitations-and-future-work" class="level3">
 <h3 class="anchored" data-anchor-id="limitations-and-future-work">Limitations and Future Work</h3>
+<p>The model is poorly predicting games with attendance that don’t fall between 60,000 and 80,000 attendants. This is likely due to a majority of values being there for use in k-nearest neighbors, while further values have less similar options. The data collection and analysis would be significantly improved if stadium data were readily available in a precleaned way. In addition, rivalries between teams could be another indicator of attendance. Since I am using a non-parametric approach, the assumptions are satisfied. There are some ethical concerns, such as if there is a great prediction, then teams might hire fewer workers during low attendance games, and ticket prices might be raised on high attendance games.</p>
 </section>
-<section id="reflection-optional-subsection" class="level3">
-<h3 class="anchored" data-anchor-id="reflection-optional-subsection">Reflection (Optional Subsection)</h3>
+<section id="reflection" class="level3">
+<h3 class="anchored" data-anchor-id="reflection">Reflection</h3>
+<p>This project has made me appreciate the difficulty of working with online data and how many of the methods we learned in class have to examined and thought about before being applied to projects.</p>
 
 
 </section>

@@ -97,6 +97,9 @@ Attendance_2020 <- Attendance_2020 %>%
     names_to = "week",
     values_to = "weekly_attendance"
   )
+Attendance_2020$year <- 2020
+Attendance_2020$home_team <- Attendance_2020$tm
+Attendance_2020$week <- as.double(Attendance_2020$week)
 attendance$newteam <- str_c(attendance$team, attendance$team_name, sep = " ", collapse = NULL)
 standings$newteam <- str_c(standings$team, standings$team_name, sep = " ", collapse = NULL)
 games$week <- as.numeric(games$week)
@@ -228,14 +231,20 @@ y = weekly_attendance
 geom_boxplot()
 ggplot(data = data_train,
 mapping = aes(
+x = simple_rating,
+y = weekly_attendance
+)
+) +
+geom_point()
+ggplot(data = data_train,
+mapping = aes(
 x = time,
 y = weekly_attendance
 )
 ) +
 geom_point()
 ```
-
-The above plots show that attendance doesn't change significantly based on the day, week, or year the game is played.
+The above plots show that attendance doesn't change significantly based on the simple rating, day, week, or year the game is played; however, it is impacted by time, but since there are different time zones, it doesn’t make much sense to use.
 
 ## More Data Wrangling
 
@@ -264,37 +273,25 @@ data_test <- data_test %>%
                             last_word, 
                             away_team)) %>%
   select(-last_word)
+Attendance_2020 <- Attendance_2020 %>%
+  mutate(last_word = str_extract(home_team, "\\w+$")) %>%
+  mutate(home_team = ifelse(duplicated(last_word) | duplicated(last_word, fromLast = TRUE),
+                            last_word, 
+                            home_team)) %>%
+  select(-last_word)
 ```
 
 ## Modeling
 
+I am performing a k-nearest neighbors as assumptions for linear regression has failed the condition of equal variance. K-nearest-neighbors is non-parametric so it has looser conditions and works by using the training set to identify the k points closest to the point we want to predict. Then an average is taken in order to make our prediction.
+
 ```{r}
-lm1 <- lm(weekly_attendance ~ home_team + away_team + week + year + day + time, data = data_train)
+lm1 <- lm(weekly_attendance ~ home_team + away_team + week + year, data = data_train)
 summary(lm1)
 plot(lm1)
+```
 
-linreg_model <- linear_reg(mode = "regression", engine = "lm")
-knn_model <- nearest_neighbor(mode = "regression",
-                              engine = "kknn",
-                              neighbors = 8, dist_power = 2)
-
-linear_recipe <- recipe(
-  weekly_attendance ~ home_team + away_team + week + year, # response ~ predictors
-  data = data_train
-)
-
-quadratic_recipe <- recipe(
-  weekly_attendance ~ home_team + away_team + week + year, # response ~ predictors
-  data = data_train
-) |>
-  step_poly(week, degree = 2)
-
-interaction_recipe <- recipe(
-  weekly_attendance ~ home_team + away_team + week + year, # response ~ predictors
-  data = data_train
-) |>
-  step_interact(terms = ~week:year) # add HR:BB interaction term
-
+```{r}
 knn_recipe <- recipe(
   weekly_attendance ~ home_team + away_team + week + year,
   data = data_train
@@ -302,69 +299,38 @@ knn_recipe <- recipe(
   step_normalize(all_numeric_predictors()) |>
   step_dummy(all_nominal_predictors())
 
-all_models <- workflow_set(
-  preproc = list(linear = linear_recipe, quadratic = quadratic_recipe,
-                 interaction = interaction_recipe, knn = knn_recipe),
-  models = list(lr = linreg_model, lr = linreg_model,
-                lr = linreg_model, knn = knn_model),
-  cross = FALSE # don't mix knn recipes with linear models or vice-versa
-)
-all_models
-
-set.seed(1112)
-data_cv <- vfold_cv(data_train, v = 10)
-
-all_models <- all_models |>
-  workflow_map("fit_resamples",
-               resamples = data_cv,
-               metrics = metric_set(rmse, mae),
-               verbose = TRUE) # lets you know where you are in the fitting process
-
-knn_model2 <- nearest_neighbor(mode = "regression", 
+knn_model <- nearest_neighbor(mode = "regression", 
                                engine = "kknn",
                                neighbors = tune(), 
                                dist_power = 2)
 
+knn_wflow <- workflow() |>
+  add_model(knn_model)
+
+data_cv <- vfold_cv(data_train, v = 10)
+
 knn.grid <- expand.grid(neighbors = seq(1,20, by = 1))
 
-all_models2 <- workflow_set(
-  preproc = list(linear = linear_recipe, 
-                 quadratic = quadratic_recipe,
-                 interaction = interaction_recipe, 
-                 knn = knn_recipe),
-  models = list(lr = linreg_model, 
-                lr = linreg_model,
-                lr = linreg_model,
-                knn2 = knn_model2),
-  cross = FALSE 
-)
+knn_wflow <- knn_wflow |>
+  add_recipe(knn_recipe)
 
-all_models2 <- all_models2 |>
-  # add the grid for JUST the knn model
-  option_add(grid = knn.grid, id = "knn_knn2") |>
-  workflow_map("tune_grid",
-               resamples = data_cv,
-               metrics = metric_set(rmse), # can add more
-               verbose = TRUE)
+knn_tune <- tune_grid(knn_model,
+knn_recipe,
+resamples = data_cv,
+grid = knn.grid)
 
-autoplot(all_models2)
+autoplot(knn_tune)
 
-autoplot(all_models2, id = "knn_knn2")
-
-rank_results(all_models2) |>
-  dplyr::select(wflow_id, .config, .metric, mean, std_err, rank) |>
-  arrange(.metric, rank)
-
-best_k <- all_models2 |> 
-  extract_workflow_set_result(id = "knn_knn2") |> 
+knn_best <- knn_tune |>
   select_best(metric = "rmse")
-  
-my_best_knn <- all_models2 |>
-  extract_workflow("knn_knn2") |>
-  finalize_workflow(parameters = best_k)
+knn_best
 
+my_best_knn <- knn_wflow |>
+  finalize_workflow(parameters = knn_best)
 my_best_knn
 ```
+
+I choose my best model based on the lowest root mean squared error, which we want to minimize as it is calculated as $\sqrt{\frac{1}{n}\sum_{i=1}^n(y_i-\hat{f}(x_i))^2}$. This is the square root of one over the total number of observations times the sum over the observations of the actual values minus the predicted values squared. Therefore, when the root mean squared error is closer to 0, the actual values are closer to the predicted values.
 
 ```{r}
 best_model_refit <- my_best_knn |>
@@ -409,61 +375,17 @@ knn_test_pred2 <- knn_fit |>
   # apply the post-processing
   cal_apply(calibrate_knn)
 
-knn_test_pred2
+knn_test_pred2 %>%
+  select(.pred, year, week, home_team, away_team, weekly_attendance)
 ```
 
-```{r}
-treeR_model <- decision_tree(mode = "regression", engine = "rpart",
-                          cost_complexity = tune())
-
-treeR_recipe <- recipe(
-  weekly_attendance ~ home_team + away_team + week + year, # response ~ predictors
-  data = data_train
-)
-
-treeR_wflow <- workflow() |>
-  add_model(treeR_model) |>
-  add_recipe(treeR_recipe)
-
-data_kfold <- vfold_cv(data_train, v = 5, repeats = 3) 
-
-treeR_tune1 <- tune_grid(treeR_model, 
-                      treeR_recipe, 
-                      resamples = data_kfold, 
-                      metrics = metric_set(rmse), # ignore r-squared, we get warning messages
-                      grid = grid_regular(cost_complexity(range = c(-3, 0)), levels = 10))
-
-treeR_tune1 |>
-  collect_metrics() |> # no need to filter for RMSE because it's the only one 
-  ggplot(mapping = aes(x = cost_complexity, y = mean)) + 
-  geom_point() + 
-  geom_line() +
-  scale_x_log10()
-
-treeR_best <- select_by_one_std_err(
-  treeR_tune1,
-  metric = "rmse",
-  desc(cost_complexity)
-)
-treeR_best
-
-treeR_wflow_final <- finalize_workflow(treeR_wflow, parameters = treeR_best) 
-
-treeR_pred_check <- treeR_wflow_final |>
-  fit_resamples(
-    resamples = data_kfold,
-    # save the cross-validated predictions
-    control = control_resamples(save_pred = TRUE)
-) |> 
-  collect_predictions()
-
-ggplot(treeR_pred_check, aes(x = weekly_attendance, y = .pred)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0, color = "blue")
-```
 
 ## Insights
 
 ### Limitations and Future Work
 
-### Reflection (Optional Subsection)
+The model is poorly predicting games with 
+
+### Reflection
+
+This project has made me appreciate the difficulty of working with online data and how many of the methods we learned in class have to examined and thought about before being applied to projects.

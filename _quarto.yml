@@ -16,9 +16,9 @@ website:
       
 format:
   html:
-    backgroundcolor: "Black"
-    fontcolor: "Orange"
-    linkcolor: "DarkBlue"
+    backgroundcolor: "Gold"
+    fontcolor: "DarkBlue"
+    linkcolor: "Orange"
     mainfont: "TimesNewRoman"
     fontsize: 20px
     theme: [cosmo, styles.scss]

@@ -1,5 +1,8 @@
 ---
 title: "NFL Attendance"
+format:
+  html:
+      code-block-background: FALSE
 ---
 
 ## Motivation and Context

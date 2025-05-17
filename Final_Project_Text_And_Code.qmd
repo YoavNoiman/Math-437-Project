@@ -31,25 +31,22 @@ The main objective of this project is to predict what the attendance per game wo
 #| label: load packages
 #| message: false
 #| warning: false
-
 library(readr)
 library(stringr)
-library(tidyr)
 library(dplyr)
-library(kknn)
-library(probably)
-library(readxl)
-library(janitor)
+library(ggplot2)
+library(naniar)
 library(workflows)
 library(workflowsets)
+library(tune)
 library(recipes)
+library(kknn)
 library(rsample)
 library(parsnip)
-library(yardstick)
-library(tune)
-library(ggplot2)
+library(tidyr)
 library(tidymodels)
-library(naniar)
+library(probably)
+library(vip)
 library(xgboost)
 ```
 
@@ -57,9 +54,23 @@ library(xgboost)
 | Package | Use |
 |-------------------------------|----------------------------------------|
 | [readr] | read in csv |
+| [stringr] | Separate strings into new rows by commas |
+| [dplyr] | In order to join data |
+| [ggplot2] | To plot data |
+| [naniar] | To plot and use missing data |
+| [workflows] | To make tidy models |
+| [workflowsets] | Also to make tidy models |
+| [tune] | To cross validate |
+| [recipes] | To build recipes for tidy model |
+| [kknn] | To build knn models |
+| [rsample] | For building cross validation data |
+| [parsnip] | For building knn too |
+| [tidyr] | To drop na values and adjust data |
+| [tidymodels] | To make grids and other modeling |
+| [probably] | To calibrate knn model |
+| [vip] | For variable importance plot |
+| [xgboost] | For boosted trees |
  ...
- 
- FINISH
 
 ## Data Description
 
@@ -85,7 +96,7 @@ There are many limitations, such as there not being recorded stadiums, stadium c
 
 ## Data Wrangling
 
-I am combining my datasets into one for prediction and making weeks into categorical variables since they aren't increasing linearly.
+I am combining my datasets into one for prediction and making weeks into a categorical variable since they aren't increasing linearly and it accounts for how one week may be higher than another week due to holidays or etc.
 
 ```{r}
 attendance$newteam <- str_c(attendance$team, attendance$team_name, sep = " ", collapse = NULL)
@@ -99,7 +110,7 @@ data <- data %>%
   left_join(standings, by = c("home_team" = "newteam", "year", "team", "team_name"))
 ```
 
-I am filtering the data to only include the last 5 years since the NFL changes at a fast pass. In addition, I tested including more data and it made the predictions worse.
+I am filtering the data to only include the last 5 years since the NFL changes at a fast pace. In addition, I tested including more data and it made the predictions worse.
 
 ```{r}
 #| label: training and testing set
@@ -172,12 +183,19 @@ ggplot(data = data_train,
        ) +
   geom_boxplot() + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+ggplot(data = data_train, 
+       mapping = aes(
+         x = away_team,
+         y = weekly_attendance
+         )
+       ) +
+  geom_boxplot() + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 
-The table above displays the number of games recorded for each home_team as we want to see how many teams are recorded in our data and the names, as there have been teams in the NFL that have changed names. In addition, we can see that there are 152 games recorded for each team, except the Chargers, Rams, and Texans. However, the Chargers and Rams have 152 when adding their other name, leaving only the Texans with 16 home games missing. This makes sense as the Texans joined in the 2002 season.
+The table above displays the number of games recorded for each home_team as we want to see how many teams are recorded in our data and the names, as there have been teams in the NFL that have changed names. In addition, we can see that there are 40 games recorded for each team, except the Chargers, Rams, and Texans. However, the Chargers and Rams have theirs split into different teams in 2017 and 2016, respectively.
 
-Through our next table, we can get the total number of values, mean, standard deviation, minimum, median, maximum, and the value at the $25\%$ and $75%$ of attendance broken into teams in our training data. The table provides exact values, so we can see the extreme values from the following box plot. In the box plot, we can see different teams of varying centers and distributions. In addition, we can see that the Los Angeles Chargers and Arizona Cardinals both have a single extremely large attendance record, which is 84301 and 103467 people, respectively. It can also be seen that the Dallas Cowboys almost always have extremely high attendance compared to other teams. Therefore, due to the differences between teams, home_team is likely a significant predictor for weekly_attendance.
-
+Through our next table, we can get the total number of values, mean, standard deviation, minimum, median, maximum, and the value at the $25\%$ and $75%$ of attendance broken into teams in our training data. The table provides exact values, so we can see the extreme values from the following box plot. In the box plot, we can see different teams of varying centers and distributions. In addition, we can see that the Los Angeles Chargers has a single extremely large attendance record, which is 84301 people. It can also be seen that the Dallas Cowboys almost always have extremely high attendance compared to other teams. Therefore, due to the differences between teams, home_team is likely a significant predictor for weekly_attendance. The same can be said for away team as well but it is significantly less severe.
 
 ```{r}
 ggplot(data = data_train,
@@ -222,7 +240,7 @@ The above plots show that attendance doesn't change significantly based on the s
 
 I am performing a k-nearest neighbors as assumptions for linear regression has failed the condition of equal variance. K-nearest-neighbors is non-parametric so it has looser conditions and works by using the training set to identify the k points closest to the point we want to predict. Then an average is taken in order to make our prediction.
 
-I am using the home_team and away_team in my prediction as they can catch information not in variables in my dataset such 
+I am using the home_team and away_team in my prediction as they can catch information not in variables in my dataset such stadium and team strength. I am also using week and year as I feel they can be used to show the changes in time, but year is numerical as it isn't in the testing set otherwise.
 
 ```{r}
 lm1 <- lm(weekly_attendance ~ home_team + away_team + week + year, data = data_train)
@@ -315,7 +333,9 @@ xgboostR_predict |>
 rmse(xgboostR_predict, truth = weekly_attendance, estimate = .pred)
 ```
 
-I am doing the same thing here but picking the highest rmse within one standard devation of the lowest.
+I am running a boosted tree here which works by trees being grown sequentially from previous trees formed thorugh a modified version of the dataset. They work by splitting trees into sections based on predictors until enough splits are made in order for the predictions to be accurate but splits are controlled so it doesn't split until groups are one.
+
+I am cross validating the same way as for knn but with the highest rmse within one standard deviation of the lowest.
 
 ## Insights
 
@@ -363,20 +383,15 @@ knn_test_pred2 <- knn_fit |>
   cal_apply(calibrate_knn)
 
 
-clean <- knn_test_pred2 %>%
-  select(.pred, year, week, home_team, away_team, weekly_attendance)
+clean <- knn_test_pred2
 clean$difference <- (clean$.pred-clean$weekly_attendance)
 clean %>%
   sort_by(clean$difference)
 ```
 
-Our test set of 2019 data shows that our model isn't that great at predicting attendance, except for attendance between about 65,000 and 75,000. In fact, it seems to be based on luck.
-
-I am also running a boosted tree model.
+Our test set of 2019 data shows that our model isn't that great at predicting attendance, except for attendance between about 65,000 and 75,000. In addition, predictions get further from our observed when further from the middle value at about 70,000.
 
 ```{r}
-library(vip)
-
 xgboostR_fit |> extract_fit_engine() |>
       vip(scale = TRUE)
 
@@ -384,11 +399,13 @@ plot(xgboostR_predict$.pred, xgboostR_predict$weekly_attendance) +
   abline(0,1)
 ```
 
-I also ran an importance plot on a boosted tree model. The highest importance is the LA Chargers most likely because there aren't that many games recorded for them and they are getting significantly less attendance than the rest of the NFL. It is followed by the Dallas Cowboys probably because they have a higher attendance than the mean.
+I also ran an importance plot on a boosted tree model. The highest importance is the LA Chargers most likely because there aren't that many games recorded for them and they are getting significantly less attendance than the rest of the NFL. It is followed by the Dallas Cowboys probably because they have a higher attendance than the mean. The years show that it is the next most used in splitting the data.
+
+The plot also shows that our predictions are closer to our actual values than the knn model.
 
 ### Limitations and Future Work
 
-The model is poorly predicting games with attendance that don't fall between 60,000 and 80,000 attendants. This is likely due to a majority of values being there for use in k-nearest neighbors, while further values have less similar options. The data collection and analysis would be significantly improved if stadium data were readily available in a precleaned way. In addition, rivalries between teams could be another indicator of attendance. Since I am using a non-parametric approach, the assumptions are satisfied. There are some ethical concerns, such as if there is a great prediction, then teams might hire fewer workers during low attendance games, and ticket prices might be raised on high attendance games.
+The knn model is poorly predicting games with attendance that don't fall between 60,000 and 80,000 attendants. This is likely due to a majority of values being there for use in k-nearest neighbors, while further values have less similar options. The data collection and analysis would be significantly improved if stadium data were readily available in a precleaned way. The boosted trees also performs better but it may be due to overfitting and shows the importance of stadiums as the teams were used significantly. In addition, rivalries between teams could be another indicator of attendance. Since I am using a non-parametric approach, the assumptions are satisfied. There are some ethical concerns, such as if there is a great prediction, then teams might hire fewer workers during low attendance games, and ticket prices might be raised on high attendance games.
 
 ### Reflection
 

@@ -110,7 +110,7 @@ data <- data %>%
   left_join(standings, by = c("home_team" = "newteam", "year", "team", "team_name"))
 ```
 
-I am filtering the data to only include the last 5 years since the NFL changes at a fast pace. In addition, I tested including more data and it made the predictions worse.
+I am filtering the data to only include the last 5 years since the NFL changes at a fast pace. In addition, I tested including more data and it made the predictions worse. I testing on the 2019 data set as it is the most recent data before 2020 which will have accurate measures as covid changed how many people attended in 2020.
 
 ```{r}
 #| label: training and testing set

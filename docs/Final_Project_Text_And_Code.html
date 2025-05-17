@@ -345,7 +345,7 @@ window.Quarto = {
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(standings, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"home_team"</span> <span class="ot">=</span> <span class="st">"newteam"</span>, <span class="st">"year"</span>, <span class="st">"team"</span>, <span class="st">"team_name"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>I am filtering the data to only include the last 5 years since the NFL changes at a fast pace. In addition, I tested including more data and it made the predictions worse.</p>
+<p>I am filtering the data to only include the last 5 years since the NFL changes at a fast pace. In addition, I tested including more data and it made the predictions worse. I testing on the 2019 data set as it is the most recent data before 2020 which will have accurate measures as covid changed how many people attended in 2020.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data_train <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">!=</span> <span class="dv">2019</span> <span class="sc">&amp;</span> year <span class="sc">&gt;</span> <span class="dv">2013</span>)</span>
@@ -830,9 +830,9 @@ Computational engine: kknn </code></pre>
 <pre><code># A tibble: 3 × 9
   trees tree_depth   learn_rate .metric .estimator   mean     n std_err .config 
   &lt;int&gt;      &lt;int&gt;        &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;   
-1  2000         15 0.1          rmse    standard    3710.    10    387. Preproc…
-2     1          8 0.00000316   rmse    standard   68883.    10    311. Preproc…
-3  1000          1 0.0000000001 rmse    standard   68883.    10    311. Preproc…</code></pre>
+1  2000         15 0.1          rmse    standard    3710.    10    360. Preproc…
+2     1          8 0.00000316   rmse    standard   68884.    10    280. Preproc…
+3  1000          1 0.0000000001 rmse    standard   68884.    10    280. Preproc…</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>xgboostR_best <span class="ot">&lt;-</span> <span class="fu">select_by_one_std_err</span>(xgboostR_tune, </span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">metric =</span> <span class="st">"rmse"</span>, </span>
@@ -943,16 +943,16 @@ Computational engine: kknn </code></pre>
 <pre><code># A tibble: 256 × 40
     .pred .resid  year week  home_team  away_team winner tie   day   date  time 
     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;tim&gt;
- 1 35665. 48165.  2019 11    Los Angel… Kansas C… Kansa… &lt;NA&gt;  Mon   Nove… 20:15
- 2 63945. 19670.  2019 9     Jacksonvi… Houston … Houst… &lt;NA&gt;  Sun   Nove… 09:30
- 3 76182. 15686.  2019 15    Dallas Co… Los Ange… Dalla… &lt;NA&gt;  Sun   Dece… 16:25
- 4 70636. 13740.  2019 8     Los Angel… Cincinna… Los A… &lt;NA&gt;  Sun   Octo… 13:00
- 5 79722. 13769.  2019 10    Dallas Co… Minnesot… Minne… &lt;NA&gt;  Sun   Nove… 20:20
- 6 63776.  7054.  2019 1     Carolina … Los Ange… Los A… &lt;NA&gt;  Sun   Sept… 13:00
- 7 68849.  7491.  2019 5     Washingto… New Engl… New E… &lt;NA&gt;  Sun   Octo… 13:00
- 8 60169.  5288.  2019 12    Buffalo B… Denver B… Buffa… &lt;NA&gt;  Sun   Nove… 13:00
- 9 64781.  5970.  2019 7     Atlanta F… Los Ange… Los A… &lt;NA&gt;  Sun   Octo… 13:00
-10 62823.  4978.  2019 14    Buffalo B… Baltimor… Balti… &lt;NA&gt;  Sun   Dece… 13:00
+ 1 33892. 48165.  2019 11    Los Angel… Kansas C… Kansa… &lt;NA&gt;  Mon   Nove… 20:15
+ 2 64587. 19670.  2019 9     Jacksonvi… Houston … Houst… &lt;NA&gt;  Sun   Nove… 09:30
+ 3 75733. 15686.  2019 15    Dallas Co… Los Ange… Dalla… &lt;NA&gt;  Sun   Dece… 16:25
+ 4 70809. 13740.  2019 8     Los Angel… Cincinna… Los A… &lt;NA&gt;  Sun   Octo… 13:00
+ 5 79513. 13769.  2019 10    Dallas Co… Minnesot… Minne… &lt;NA&gt;  Sun   Nove… 20:20
+ 6 64432.  7054.  2019 1     Carolina … Los Ange… Los A… &lt;NA&gt;  Sun   Sept… 13:00
+ 7 68992.  7491.  2019 5     Washingto… New Engl… New E… &lt;NA&gt;  Sun   Octo… 13:00
+ 8 60446.  5288.  2019 12    Buffalo B… Denver B… Buffa… &lt;NA&gt;  Sun   Nove… 13:00
+ 9 65310.  5970.  2019 7     Atlanta F… Los Ange… Los A… &lt;NA&gt;  Sun   Octo… 13:00
+10 63489.  4978.  2019 14    Buffalo B… Baltimor… Balti… &lt;NA&gt;  Sun   Dece… 13:00
 # ℹ 246 more rows
 # ℹ 29 more variables: pts_win &lt;dbl&gt;, pts_loss &lt;dbl&gt;, yds_win &lt;dbl&gt;,
 #   turnovers_win &lt;dbl&gt;, yds_loss &lt;dbl&gt;, turnovers_loss &lt;dbl&gt;,

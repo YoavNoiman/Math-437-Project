@@ -204,7 +204,7 @@ x = year,
 y = weekly_attendance
 )
 ) +
-geom_boxplot()
+geom_point()
 ggplot(data = data_train,
 mapping = aes(
 x = day,

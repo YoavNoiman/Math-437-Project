@@ -50,6 +50,7 @@ library(tune)
 library(ggplot2)
 library(tidymodels)
 library(naniar)
+library(xgboost)
 ```
 
 
@@ -62,7 +63,7 @@ library(naniar)
 
 ## Data Description
 
-I am using data on attendance, scores, and other metrics for football teams' games from 2000 to 2019. It is from a Tidy Tuesday from 02/04/2020, which is a community which posts weekly projects. The data is collected from Pro Football Reference which I am also using, and it was most likely collected through nfl.com as there is a game book which states the attendance as the data matches it. It also states the stadiums which would be useful to scrape and the dates and times are also most likely collected from their. The game book states it is paid attendance which is probably collected based on how many tickets are used to enter the stadium.
+I am using data on attendance, scores, and other metrics for football teams' games from 2000 to 2019. It is from a Tidy Tuesday from 02/04/2020, which is a community that posts weekly projects. The data is collected from Pro Football Reference, which I am also using, and it was most likely collected through nfl.com as there is a gamebook that states the attendance as the data matches it. It also states the stadiums that would be useful to scrape, and the dates and times are also most likely collected from them. The game book states that paid attendance is probably collected based on how many tickets are used to enter the stadium. I have looked at and downloaded some stadiums and data for 2020; however, the data wrangling required exceeds the time remaining to complete the project.
 
 Tidy Tuesday https://github.com/rfordatascience/tidytuesday/tree/main/data/2020/2020-02-04
 
@@ -76,10 +77,6 @@ NFL Website https://www.nfl.com/
 attendance <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-02-04/attendance.csv')
 standings <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-02-04/standings.csv')
 games <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2020/2020-02-04/games.csv')
-
-stadiums <- clean_names(read_excel(here::here("Final_Project_Data/Stadiums.xls")))
-
-Attendance_2020 <- clean_names(read_excel(here::here("Final_Project_Data/2020Attendance.xls")))
 ```
 
 ### Data Limitations
@@ -88,18 +85,9 @@ There are many limitations, such as there not being recorded stadiums, stadium c
 
 ## Data Wrangling
 
+I am combining my datasets into one for prediction and making weeks into categorical variables since they aren't increasing linearly.
+
 ```{r}
-Attendance_2020 <- Attendance_2020 %>%
-  mutate(across(starts_with("week_"), as.numeric)) %>%
-  pivot_longer(
-    cols = starts_with("week_"),
-    names_prefix = "week_",
-    names_to = "week",
-    values_to = "weekly_attendance"
-  )
-Attendance_2020$year <- 2020
-Attendance_2020$home_team <- Attendance_2020$tm
-Attendance_2020$week <- as.double(Attendance_2020$week)
 attendance$newteam <- str_c(attendance$team, attendance$team_name, sep = " ", collapse = NULL)
 standings$newteam <- str_c(standings$team, standings$team_name, sep = " ", collapse = NULL)
 games$week <- as.numeric(games$week)
@@ -109,31 +97,18 @@ data <- games %>%
   left_join(attendance, by = c("home_team" = "newteam", "year", "week"))
 data <- data %>%
   left_join(standings, by = c("home_team" = "newteam", "year", "team", "team_name"))
-stadiums <- stadiums %>%
-  separate_rows(primary_team_s, sep = ",")
-stadiums <- stadiums %>%
-  drop_na(primary_team_s)
-stadiums <- stadiums %>%
-  rowwise() %>%
-  mutate(year = list(from:to)) %>%
-  unnest(year) %>%
-  select(-from, -to)
-stadiums <- stadiums %>%
-  filter(year >= 2000)
-stadiums <- stadiums %>%
-  filter(year <= 2020)
-stadiums <- stadiums %>%
-  distinct(year, primary_team_s, .keep_all = TRUE)
-data <- data %>%
-  left_join(stadiums, by = c("home_team" = "primary_team_s", "year"))
 ```
+
+I am filtering the data to only include the last 5 years since the NFL changes at a fast pass. In addition, I tested including more data and it made the predictions worse.
 
 ```{r}
 #| label: training and testing set
 data_train <- data %>%
-  filter(year != 2019)
+  filter(year != 2019 & year > 2013)
 data_test <- data %>%
   filter(year == 2019)
+data_train$week <- as.factor(data_train$week)
+data_test$week <- as.factor(data_test$week)
 ```
 
 ## Exploratory Data Analysis
@@ -205,10 +180,7 @@ Through our next table, we can get the total number of values, mean, standard de
 
 
 ```{r}
-data_train2 <- data_train
-data_train2$year <- as.factor(data_train$year)
-data_train2$week <- as.factor(data_train$week)
-ggplot(data = data_train2,
+ggplot(data = data_train,
 mapping = aes(
 x = year,
 y = weekly_attendance
@@ -222,7 +194,7 @@ y = weekly_attendance
 )
 ) +
 geom_boxplot()
-ggplot(data = data_train2,
+ggplot(data = data_train,
 mapping = aes(
 x = week,
 y = weekly_attendance
@@ -246,44 +218,11 @@ geom_point()
 ```
 The above plots show that attendance doesn't change significantly based on the simple rating, day, week, or year the game is played; however, it is impacted by time, but since there are different time zones, it doesn’t make much sense to use.
 
-## More Data Wrangling
-
-```{r}
-data_train <- data_train %>%
-  mutate(last_word = str_extract(home_team, "\\w+$")) %>%
-  mutate(home_team = ifelse(duplicated(last_word) | duplicated(last_word, fromLast = TRUE),
-                            last_word, 
-                            home_team)) %>%
-  select(-last_word)
-data_train <- data_train %>%
-  mutate(last_word = str_extract(away_team, "\\w+$")) %>%
-  mutate(away_team = ifelse(duplicated(last_word) | duplicated(last_word, fromLast = TRUE),
-                            last_word, 
-                            away_team)) %>%
-  select(-last_word)
-data_test <- data_test %>%
-  mutate(last_word = str_extract(home_team, "\\w+$")) %>%
-  mutate(home_team = ifelse(duplicated(last_word) | duplicated(last_word, fromLast = TRUE),
-                            last_word, 
-                            home_team)) %>%
-  select(-last_word)
-data_test <- data_test %>%
-  mutate(last_word = str_extract(away_team, "\\w+$")) %>%
-  mutate(away_team = ifelse(duplicated(last_word) | duplicated(last_word, fromLast = TRUE),
-                            last_word, 
-                            away_team)) %>%
-  select(-last_word)
-Attendance_2020 <- Attendance_2020 %>%
-  mutate(last_word = str_extract(home_team, "\\w+$")) %>%
-  mutate(home_team = ifelse(duplicated(last_word) | duplicated(last_word, fromLast = TRUE),
-                            last_word, 
-                            home_team)) %>%
-  select(-last_word)
-```
-
 ## Modeling
 
 I am performing a k-nearest neighbors as assumptions for linear regression has failed the condition of equal variance. K-nearest-neighbors is non-parametric so it has looser conditions and works by using the training set to identify the k points closest to the point we want to predict. Then an average is taken in order to make our prediction.
+
+I am using the home_team and away_team in my prediction as they can catch information not in variables in my dataset such 
 
 ```{r}
 lm1 <- lm(weekly_attendance ~ home_team + away_team + week + year, data = data_train)
@@ -331,6 +270,52 @@ my_best_knn
 ```
 
 I choose my best model based on the lowest root mean squared error, which we want to minimize as it is calculated as $\sqrt{\frac{1}{n}\sum_{i=1}^n(y_i-\hat{f}(x_i))^2}$. This is the square root of one over the total number of observations times the sum over the observations of the actual values minus the predicted values squared. Therefore, when the root mean squared error is closer to 0, the actual values are closer to the predicted values.
+
+```{r}
+xgboostR_model <- boost_tree(mode = "regression", engine = "xgboost",
+                            trees = tune(), tree_depth = tune(),
+                            learn_rate = tune())
+
+xgboostR_recipe <- recipe(
+  weekly_attendance ~ home_team + away_team + week + year,, # response ~ predictors
+  data = data_train
+) |>
+  step_dummy(all_nominal_predictors())
+
+xgboostR_wflow <- workflow() |>
+  add_model(xgboostR_model) |>
+  add_recipe(xgboostR_recipe)
+
+set.seed(1486)
+xgboostR_tune <- tune_grid(xgboostR_model, 
+                      xgboostR_recipe, 
+                      resamples = data_cv,
+                      metrics = metric_set(rmse),
+                      grid = grid_space_filling(
+                        trees(), 
+                        tree_depth(), 
+                        learn_rate(), 
+                        size = 3)) # search over 20 possible combinations of the three parameters - keep this small if you don't want it running forever
+
+xgboostR_tune |>
+  collect_metrics() |>
+  filter(.metric == "rmse") |>
+  arrange(mean)
+
+xgboostR_best <- select_by_one_std_err(xgboostR_tune, 
+                             metric = "rmse", 
+                             tree_depth, trees, desc(learn_rate))
+xgboostR_wflow_final <- finalize_workflow(xgboostR_wflow, 
+                                          parameters = xgboostR_best) 
+
+xgboostR_fit <- fit(xgboostR_wflow_final, data = data_train)
+xgboostR_predict <- augment(xgboostR_fit, new_data = data_test)
+xgboostR_predict |> 
+  dplyr::slice(1:10) # must use dplyr::slice because there is also a slice function in xgboost
+rmse(xgboostR_predict, truth = weekly_attendance, estimate = .pred)
+```
+
+I am doing the same thing here but picking the highest rmse within one standard devation of the lowest.
 
 ## Insights
 
@@ -385,7 +370,21 @@ clean %>%
   sort_by(clean$difference)
 ```
 
-Our test set of 2019 data shows that our model isn't that great at predicting attendance, except for attendance between 60,000 and 80,000. In fact, it seems to be based on luck. Therefore, since our model isn't great at predicting the 2019 data we can't and won't move onto 2020 data until we get better results.
+Our test set of 2019 data shows that our model isn't that great at predicting attendance, except for attendance between about 65,000 and 75,000. In fact, it seems to be based on luck.
+
+I am also running a boosted tree model.
+
+```{r}
+library(vip)
+
+xgboostR_fit |> extract_fit_engine() |>
+      vip(scale = TRUE)
+
+plot(xgboostR_predict$.pred, xgboostR_predict$weekly_attendance) +
+  abline(0,1)
+```
+
+I also ran an importance plot on a boosted tree model. The highest importance is the LA Chargers most likely because there aren't that many games recorded for them and they are getting significantly less attendance than the rest of the NFL. It is followed by the Dallas Cowboys probably because they have a higher attendance than the mean.
 
 ### Limitations and Future Work
 
@@ -394,3 +393,10 @@ The model is poorly predicting games with attendance that don't fall between 60,
 ### Reflection
 
 This project has made me appreciate the difficulty of working with online data and how many of the methods we learned in class have to examined and thought about before being applied to projects.
+
+How did doing this project increase your understanding of statistical learning and/or the real-world domain you investigated? (It's perfectly okay to say you learned nothing, in which case you should explain why.) 
+This project made me understand the complexity of working with datasets collected by other people and how much bad data there is to work with. In the presentations, I listened to a common theme, synthetic data from Kaggle, and the main insight was a lack of connection. The project also granted me a better understanding of game attendance and how much data would be nice to have in order to predict future attendance. There was also domain-specific knowledge I got a better understanding of, such as the fact that there is a bye week for each NFL team in the regular season. In addition, I understand how many limitations a project can have, with stadium data being a recurring theme of what I would need in order to make a deeper analysis. The project also provided me with the method to build and adjust a website. I plan to continue using the technique of building a website for my resume and further academic projects. 
+How have you grown as a mathematician, statistician, and/or data scientist through taking Math 437 this semester? How do you hope to continue growing in the near future as a mathematician, statistician, and/or data scientist, and how (if at all) has Math 437 influenced those ideas? 
+I have grown significantly through taking this class. I have learned more about statistical methods for modeling regression and classification. I hope to continue growing in the near future by pursuing a PhD at Florida State University. In addition, I plan to continue doing research on this subject. Math 437 has influenced my approach to statistics by making me learn to apply more methods and the importance of learning the methodology and requirements in order to use certain methods.
+What were you most proud of accomplishing in this class, and why? (This can be a "little win" like "solving Problem X on Homework Y on my own" or "getting Lab Z to render correctly on the first try.")
+My proudest accomplishment in this class is my grade on the conceptual exam because I put multiple hours into creating an all-encompassing study guide in order to make it as simple as possible. I went through the book and example code to relearn the material in preparation, and I felt that my grade on it was a reflection of my effort in the class. I would like to hope that my overall grade in the class will end up being my greatest accomplishment.
